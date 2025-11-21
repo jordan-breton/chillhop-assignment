@@ -1,19 +1,17 @@
-*
-{
+* {
     margin: 0;
     padding: 0;
 }
 
 html,
-body
-{
+body {
     overflow: hidden;
 }
 
-.webgl
-{
+.webgl {
+	touch-action: none;
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
+	margin: auto;
     outline: none;
 }
