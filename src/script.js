@@ -140,8 +140,8 @@ gltfLoader.load('/model.glb', (model) => {
 	toneMappingEffect.exposure = 1.0;
 
 	const bloomEffect = new BloomEffect({
-		luminanceThreshold: 0.86,
-		intensity: 0.25,
+		luminanceThreshold: 0.955,
+		intensity: 0.44,
 	});
 
 	gui.add(bloomEffect, "intensity", 0.0, 2.5, 0.01)
@@ -150,7 +150,6 @@ gltfLoader.load('/model.glb', (model) => {
 	gui.add(bloomEffect.luminanceMaterial, "threshold", 0.0, 1.5, 0.001)
 		.name("Bloom Threshold");
 
-// Choose one effect
 	const effectPass = new EffectPass(
 		camera,
 		atmosphere.effect,
@@ -212,7 +211,7 @@ renderer.setPixelRatio(sizes.pixelRatio);
 
 const time = new Time();
 const birds = new Birds({
-	birdCount: 5,
+	birdCount: 15,
 	texture: textureLoader.load('/textures/bird.webp'),
 	scene,
 });

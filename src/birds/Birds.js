@@ -41,11 +41,11 @@ export default class Birds {
 		const geometry = new THREE.PlaneGeometry(0.04, 0.04, 10, 10);
 
 		const boundingBox = Birds.createBoundingBox(
-			15,
-			1.5,
+			20,
+			1,
 			15,
 			new THREE.Vector3(
-				2, 2.8, 0
+				2, 2.65, 0
 			)
 		);
 		for (let i = 0; i < birdCount; i++) {
