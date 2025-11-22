@@ -1,14 +1,15 @@
 import * as THREE from 'three';
 import GUI from 'lil-gui';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import {
 	EffectComposer,
 	RenderPass,
 	EffectPass,
 	BlendFunction,
-	HueSaturationEffect,
-	ToneMappingEffect, Effect,
+	ToneMappingEffect,
+	Effect,
+	SMAAEffect,
+	BloomEffect,
 } from 'postprocessing';
 import Stats from 'stats.js';
 import Time from './utils/Time.js';
@@ -16,9 +17,10 @@ import Birds from './birds/Birds.js';
 import Random from './utils/Random.js';
 import {applyMaterialToGroup, loadUvTexture} from './utils/misc.js';
 import Cat from './cat/Cat.js';
+import Atmosphere from './atmosphere/Atmosphere.js';
 
 const stats = new Stats();
-// document.body.appendChild(stats.dom);
+document.body.appendChild(stats.dom);
 
 /**
  * Base
@@ -26,8 +28,6 @@ const stats = new Stats();
 // Debug
 const gui = new GUI({ width: 325 });
 const debugObject = {};
-const dawnColor = new THREE.Color(0xffb878);
-const nightColor = new THREE.Color(0x223366);
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl');
@@ -68,57 +68,10 @@ let controls;
 let composer;
 let cat;
 let initialized = false;
+let atmosphere;
 
 const foliages = [];
 const foliageMoves = [];
-
-const gradientTexture = new THREE.TextureLoader().load('/textures/gradient.png');
-gradientTexture.colorSpace = THREE.SRGBColorSpace;
-gradientTexture.minFilter = THREE.LinearFilter;
-gradientTexture.magFilter = THREE.LinearFilter;
-gradientTexture.wrapS = THREE.ClampToEdgeWrapping;
-gradientTexture.wrapT = THREE.ClampToEdgeWrapping;
-
-const gradientTintEffect = new Effect(
-	camera,
-	`
-precision highp float;
-
-uniform sampler2D uGradient;
-
-float luminance(vec3 color) {
-    return dot(color, vec3(0.2126, 0.7152, 0.0722));
-}
-
-void mainImage(const in vec4 inputColor, const in vec2 uv, out vec4 outputColor) {
-    // Read original scene pixel
-    vec4 tex = inputColor;
-    
-    // Convert sRGB -> linear
-    vec3 color = pow(tex.rgb, vec3(2.2));
-    
-    // Compute luminance
-    float lum = luminance(tex.rgb);
-    
-    // Sample gradient using luminance
-    vec3 gradientColor = pow(texture2D(uGradient, vec2(lum, 0.0)).rgb, vec3(2.2));
-    
-    // Multiply scene color by gradient
-    color *= gradientColor;
-    
-    // Back to sRGB
-    color = pow(color, vec3(1.0 / 2.2));
-    
-    outputColor = vec4(color, tex.a);
-}
-    `,
-	{
-		blendFunction: BlendFunction.NORMAL, // we already multiplied inside
-		uniforms: new Map([
-			['uGradient', { value: gradientTexture }]
-		])
-	}
-);
 
 /**
  * Scene
@@ -175,30 +128,34 @@ gltfLoader.load('/model.glb', (model) => {
 	composer = new EffectComposer(renderer);
 	composer.addPass(new RenderPass(scene, camera));
 
-	const color = new THREE.Color(0xffb878).convertSRGBToLinear();
-	const dawnEffect = new HueSaturationEffect({
-		hue: -0.05,        // slightly orange
-		saturation: 0.8,
-		blendFunction: BlendFunction.HARD_LIGHT,
-	});
-
-	dawnEffect.blendMode.opacity.value = 0.4;
-
-	// Night (cool)
-	const nightEffect = new HueSaturationEffect({
-		hue: -0.3,        // slightly blue
-		saturation: 0.3,
-		blendFunction: BlendFunction.MULTIPLY
+	atmosphere = new Atmosphere({
+		gui,
+		camera,
+		textureLoader,
+		gradientMapUrl: '/textures/gradient-map.png'
 	});
 
 	const toneMappingEffect = new ToneMappingEffect();
 	toneMappingEffect.toneMapping = THREE.ACESFilmicToneMapping;
 	toneMappingEffect.exposure = 1.0;
 
+	const bloomEffect = new BloomEffect({
+		luminanceThreshold: 0.86,
+		intensity: 0.25,
+	});
+
+	gui.add(bloomEffect, "intensity", 0.0, 2.5, 0.01)
+		.name("Bloom Intensity");
+
+	gui.add(bloomEffect.luminanceMaterial, "threshold", 0.0, 1.5, 0.001)
+		.name("Bloom Threshold");
+
 // Choose one effect
 	const effectPass = new EffectPass(
 		camera,
-		gradientTintEffect,
+		atmosphere.effect,
+		bloomEffect,
+		new SMAAEffect(),
 		toneMappingEffect,
 	);
 	composer.addPass(effectPass);
