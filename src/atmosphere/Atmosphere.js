@@ -34,16 +34,19 @@ export default class Atmosphere {
 				blendFunction: BlendFunction.NORMAL, // we already multiplied inside
 				uniforms: new Map([
 					['uGradient', { value: texture }],
-					['uIndex',    { value: 5 }],   // 1–32
+					['uIndex',    { value: 2 }],   // 1–32
+					['uFromIndex',    { value: 2 }],   // 1–32
+					['uToIndex',    { value: 2 }],   // 1–32
+					['uMix',    { value: 0 }],   // total number of gradients
 					['uCount',    { value: 32 }]   // total number of gradients
 				])
 			}
 		);
 
 		gui.add(
-			gradientTintEffect.uniforms.get('uIndex'),
+			gradientTintEffect.uniforms.get('uFromIndex'),
 			"value",
-			1, 32, 1
+			0, 32, 1
 		)
 			.name("Atmosphere");
 
