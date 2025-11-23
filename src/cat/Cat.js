@@ -1,24 +1,25 @@
 import * as THREE from 'three';
 import fragmentShader from './shaders/fragment.glsl';
 import vertexShader from './shaders/vertex.glsl';
+import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
 
-export default class Cat {
-	constructor({mesh, texture}){
-		this.mesh = mesh;
-		this.material = new THREE.ShaderMaterial({
-			fragmentShader,
-			vertexShader,
-			uniforms: {
-				uTime: new THREE.Uniform(0),
-				uTexture: new THREE.Uniform(texture),
-			},
-			transparent: true,
-		});
+export default function initCat(mesh, texture) {
+	const material = new CustomShaderMaterial({
+		baseMaterial: THREE.MeshStandardMaterial,
+		vertexShader: vertexShader,
+		fragmentShader: fragmentShader,
+		uniforms: {
+			uTime: new THREE.Uniform(0),
+			uTexture: new THREE.Uniform(texture),
+		},
+		transparent: true,
+	});
 
-		this.mesh.material = this.material;
-	}
+	mesh.material = material;
 
-	update(time) {
-		this.material.uniforms.uTime.value = time.elapsedSeconds;
+	return {
+		update(time) {
+			material.uniforms.uTime.value = time.elapsedSeconds;
+		}
 	}
 }

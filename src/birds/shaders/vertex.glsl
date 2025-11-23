@@ -1,5 +1,3 @@
-#include <fog_pars_vertex>
-
 uniform float uTime;
 uniform float uSize;
 
@@ -20,8 +18,5 @@ void main() {
         sin(flapTime) * abs(position.x) + hovering
     );
 
-    vec4 mvPosition = modelViewMatrix * vec4(updatePosition, 1.0);
-    gl_Position = projectionMatrix * mvPosition;
-
-    #include <fog_vertex>
+    csm_Position = updatePosition;
 }

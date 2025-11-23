@@ -7,7 +7,6 @@ export function loadUvTexture(url) {
 
 	texture.colorSpace = THREE.SRGBColorSpace;
 	texture.flipY = false;
-	texture.needsUpdate = true;
 
 	return texture;
 }
@@ -16,6 +15,8 @@ export function applyMaterialToGroup(group, material) {
 	group.traverse((obj) => {
 		if (obj instanceof THREE.Mesh) {
 			obj.material = material;
+			obj.castShadow = true;
+			obj.receiveShadow = true;
 		}
 	});
 }

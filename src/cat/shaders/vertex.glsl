@@ -1,5 +1,3 @@
-#include <fog_pars_vertex>
-
 uniform float uTime;
 
 varying vec2 vUv;
@@ -16,8 +14,5 @@ void main() {
         newPosition.y += sin(uTime * speed) * 0.010;
     }
 
-    vec4 mvPosition = modelViewMatrix * vec4(newPosition, 1.0);
-    gl_Position = projectionMatrix * mvPosition;
-
-    #include <fog_vertex>
+    csm_Position = newPosition;
 }

@@ -3,6 +3,7 @@ import birdVertexShader from "./shaders/vertex.glsl";
 import birdFragmentShader from "./shaders/fragment.glsl";
 import CurvedPathUtils from "../utils/CurvedPathUtils.js";
 import Random from "../utils/Random.js";
+import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
 
 export default class Bird {
 	static id = 0;
@@ -30,19 +31,17 @@ export default class Bird {
 	}
 
 	createMaterial() {
-		this.material = new THREE.ShaderMaterial({
+		this.material = new CustomShaderMaterial({
+			baseMaterial: THREE.MeshStandardMaterial,
 			transparent: true,
 			side: THREE.DoubleSide,
 			vertexShader: birdVertexShader,
 			fragmentShader: birdFragmentShader,
-			fog: true,
-			depthWrite: false,
 			uniforms: {
 				uTime: { value: 0 },
 				uSize: { value: 0.04 },
 				uTexture: { value: this.texture },
 				uColor: { value: new THREE.Color('#d2d2d2') },
-				...THREE.UniformsLib.fog
 			}
 		});
 	}
@@ -50,6 +49,7 @@ export default class Bird {
 	createMesh() {
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 
+		this.mesh.receiveShadow = true;
 		this.mesh.rotation.x = -Math.PI * 0.5;
 		this.mesh.rotation.z = Math.PI;
 
