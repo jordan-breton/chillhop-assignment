@@ -20,8 +20,8 @@ export default function initLights(scene, model) {
 
 	model.scene.getObjectByName('lights').traverse((pointLight) => {
 		pointLight.intensity = 0.5;
-		pointLight.color = new THREE.Color("#ff9900");
-		pointLight.decay = 5;
+		pointLight.color = new THREE.Color("#ffa428");
+		pointLight.decay = 5.5;
 		pointLight.castShadow = false;
 	});
 }

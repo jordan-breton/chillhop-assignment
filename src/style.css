@@ -15,3 +15,14 @@ body {
 	margin: auto;
     outline: none;
 }
+
+.placeholder-bg {
+	position: fixed;
+	inset: 0;
+	background: radial-gradient(circle at 40% 30%, #ffffff 0%, #e9eef5 40%, #d8dee8 100%);
+	z-index: 0;
+}
+.placeholder-bg.dark {
+	background: radial-gradient(circle at 50% 40%, #1f2733 0%, #151b24 60%, #0d1117 100%);
+}
+

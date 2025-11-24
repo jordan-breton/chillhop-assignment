@@ -14,6 +14,9 @@ import initCat from './cat/Cat.js';
 import initEnvironment from './scene/environment.js';
 import initSuburb from './scene/suburb.js';
 import initBirds from './birds/Birds.js';
+import initCar from './car/car.js';
+import initWater from './scene/water.js';
+import initPlane from './plane/plane.js';
 
 const canvas = document.querySelector('canvas.webgl');
 
@@ -72,9 +75,10 @@ window.addEventListener('resize', () => {
 
 const renderer = new THREE.WebGLRenderer({
 	canvas: canvas,
-	antialias: true
+	antialias: true,
+	alpha: true,
 });
-renderer.setClearColor(scene.fog.color);
+renderer.setClearColor(0x000000, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.NoToneMapping;
@@ -109,8 +113,11 @@ function start(model) {
 	const birds = initBirds(
 		scene,
 		textureLoader.load('/textures/bird.webp'),
-		15,
+		8,
 	);
+	const car = initCar(scene, model);
+	const plane = initPlane(scene, model);
+	const water = initWater(scene, model);
 
 	const tick = () => {
 		stats.begin();
@@ -121,6 +128,9 @@ function start(model) {
 		cat.update(time);
 		birds.update(time);
 		cameraController.update();
+		car.update(time);
+		plane.update(time);
+		water.update(time);
 
 		composer.render();
 

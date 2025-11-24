@@ -24,8 +24,8 @@ export default function initPostprocessing(scene, camera, renderer, gui) {
 	toneMappingEffect.exposure = 1.0;
 
 	const bloomEffect = new BloomEffect({
-		luminanceThreshold: 0.955,
-		intensity: 0.44,
+		luminanceThreshold: 0.118,
+		intensity: 0.64,
 	});
 
 	gui.add(bloomEffect, "intensity", 0.0, 2.5, 0.01)

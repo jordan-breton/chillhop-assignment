@@ -28,7 +28,7 @@ export default function initVegetation(scene, model) {
 	return {
 		update(time) {
 			foliages.forEach((foliage, i) => {
-				foliage.rotation.x = foliageMoves[i](time.elapsedSeconds) * 0.02;
+				foliage.rotation.x = foliageMoves[i](time.elapsedSeconds) * 0.035;
 			});
 		}
 	}
