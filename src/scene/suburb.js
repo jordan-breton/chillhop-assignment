@@ -16,11 +16,13 @@ export default function initSuburb(scene, model) {
 	lightsTexture.colorSpace = THREE.SRGBColorSpace;
 
 	const mainMaterial = new CustomShaderMaterial({
-		baseMaterial: THREE.MeshStandardMaterial,
+		baseMaterial: THREE.MeshToonMaterial,
 		fragmentShader,
 		vertexShader,
 		map: mainTexture,
 		uniforms: {
+			uLightIntensity: new THREE.Uniform(250.0),
+			uLightColor: new THREE.Uniform(new THREE.Color('#8F564D')),
 			uLightsTexture: new THREE.Uniform(lightsTexture),
 		}
 	});
@@ -28,6 +30,6 @@ export default function initSuburb(scene, model) {
 	applyMaterialToGroup(mainGroup, mainMaterial);
 
 	const lights = mainGroup.getObjectByName('Streetlights');
-	lights.castShadow = false;
-	lights.receiveShadow = false;
+	lights.castShadow = true;
+	lights.receiveShadow = true;
 }

@@ -16,14 +16,17 @@ export default function initEnvironment(scene, model) {
 	lightsTexture.wrapT = THREE.ClampToEdgeWrapping;
 	lightsTexture.colorSpace = THREE.SRGBColorSpace;
 
-	const environmentMaterial = new CustomShaderMaterial({
-		baseMaterial: THREE.MeshStandardMaterial,
+	let environmentMaterial = new CustomShaderMaterial({
+		baseMaterial: THREE.MeshToonMaterial,
 		fragmentShader,
 		vertexShader,
 		map: environmentTexture,
 		uniforms: {
+			uLightIntensity: new THREE.Uniform(125.0),
+			uLightColor: new THREE.Uniform(new THREE.Color('#985D55')),
 			uLightsTexture: new THREE.Uniform(lightsTexture),
 		}
 	});
+
 	applyMaterialToGroup(environmentGroup, environmentMaterial);
 }

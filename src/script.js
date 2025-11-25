@@ -35,11 +35,6 @@ const gui = new GUI({ width: 325 });
 
 const scene = new THREE.Scene();
 
-scene.fog = new THREE.FogExp2(
-	new THREE.Color("#ffffff"),
-	0.001,
-);
-
 //endregion
 //region Loaders
 
@@ -75,15 +70,12 @@ window.addEventListener('resize', () => {
 
 const renderer = new THREE.WebGLRenderer({
 	canvas: canvas,
-	antialias: true,
 	alpha: true,
 });
 renderer.setClearColor(0x000000, 0);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.NoToneMapping;
-renderer.toneMappingExposure = 1;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(sizes.pixelRatio);
 
@@ -113,7 +105,7 @@ function start(model) {
 	const birds = initBirds(
 		scene,
 		textureLoader.load('/textures/bird.webp'),
-		8,
+		5,
 	);
 	const car = initCar(scene, model);
 	const plane = initPlane(scene, model);

@@ -4,8 +4,6 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 export default function initCameraController(canvas, camera, sizes) {
 	let canvasRect = canvas.getBoundingClientRect();
 
-	// const orbit = new OrbitControls(camera, canvas);
-
 	window.addEventListener('resize', () => {
 		canvasRect = canvas.getBoundingClientRect();
 	});
@@ -47,8 +45,11 @@ export default function initCameraController(canvas, camera, sizes) {
 		camera.updateProjectionMatrix();
 	});
 
+	// const orbit = new OrbitControls(camera, canvas);
 	return {
 		update() {
+			//return;
+
 			tiltQuat.setFromEuler(
 				new THREE.Euler(target.x, target.y, 0, 'YXZ'),
 			);

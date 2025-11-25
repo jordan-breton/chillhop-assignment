@@ -13,7 +13,7 @@ void main() {
         discard;
     }
 
-    vec4 finalColor = vec4(color.rgb * uColor * 50.0, alpha);
+    vec4 finalColor = vec4(color.rgb * uColor, alpha);
 
     csm_DiffuseColor = finalColor;
 }

@@ -4,8 +4,8 @@ import {
 	EffectComposer,
 	EffectPass,
 	RenderPass,
-	SMAAEffect,
-	ToneMappingEffect
+	SMAAEffect, SMAAPreset,
+	ToneMappingEffect,
 } from 'postprocessing';
 
 export default function initPostprocessing(scene, camera, renderer, gui) {
@@ -24,8 +24,8 @@ export default function initPostprocessing(scene, camera, renderer, gui) {
 	toneMappingEffect.exposure = 1.0;
 
 	const bloomEffect = new BloomEffect({
-		luminanceThreshold: 0.118,
-		intensity: 0.64,
+		luminanceThreshold: 0.0,
+		intensity: 0.35,
 	});
 
 	gui.add(bloomEffect, "intensity", 0.0, 2.5, 0.01)
@@ -38,7 +38,9 @@ export default function initPostprocessing(scene, camera, renderer, gui) {
 		camera,
 		// atmosphere.effect,
 		bloomEffect,
-		new SMAAEffect(),
+		new SMAAEffect({
+			preset: SMAAPreset.ULTRA,
+		}),
 		toneMappingEffect,
 	);
 

@@ -7,7 +7,7 @@ export default function initWater(scene, model) {
 	console.log(water);
 
 	const waterMaterial = new CustomShaderMaterial({
-		baseMaterial: THREE.MeshStandardMaterial,
+		baseMaterial: THREE.MeshToonMaterial,
 		blending: THREE.AdditiveBlending,
 		uniforms: {
 			uTime: { value: 0 },

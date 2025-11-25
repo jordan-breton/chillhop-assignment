@@ -17,6 +17,7 @@ export function applyMaterialToGroup(group, material) {
 			obj.material = material;
 			obj.castShadow = true;
 			obj.receiveShadow = true;
+			obj.material.side = THREE.DoubleSide;
 		}
 	});
 }

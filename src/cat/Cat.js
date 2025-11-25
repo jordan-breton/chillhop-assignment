@@ -5,7 +5,7 @@ import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
 
 export default function initCat(mesh, texture) {
 	const material = new CustomShaderMaterial({
-		baseMaterial: THREE.MeshStandardMaterial,
+		baseMaterial: THREE.MeshToonMaterial,
 		vertexShader: vertexShader,
 		fragmentShader: fragmentShader,
 		uniforms: {

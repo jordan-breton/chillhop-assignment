@@ -16,24 +16,36 @@ export default function initCar(scene, model) {
 	const curve = new THREE.CatmullRomCurve3(points, false);
 
 	const duration = 60;
+	const carMaterials = {};
 
 	const cars = CARS.map((entry, i) => {
 		const clone = baseCar.clone(true);
 		clone.visible = true;
 
 		clone.traverse(carPart => {
+			if (carPart instanceof THREE.Mesh) {
+				carPart.castShadow = true;
+			}
+
+			if (carPart.material) {
+				if (carPart.material.name in carMaterials) {
+					carPart.material = carMaterials[carPart.material.name];
+				} else {
+					const name = carPart.material.name;
+					carPart.material = new THREE.MeshToonMaterial(carPart.material);
+					carPart.material.name = name;
+					carMaterials[name] = carPart.material;
+				}
+			}
+
 			if (carPart.material?.name === "Mat.1_3.001") {
 				carPart.material = carPart.material.clone();
 				carPart.material.color = new THREE.Color(entry.color);
-			}
-
-			if (carPart.material?.name === "Mat.1_0.001") {
+			} else if (carPart.material?.name === "Mat.1_0.001") {
 				carPart.material.color = new THREE.Color(1, 0, 0);
 				carPart.material.emissive = new THREE.Color(1, 0, 0);
 				carPart.material.emissiveIntensity = 110.0;
-			}
-
-			if (carPart.material?.name === "front-lights") {
+			} else if (carPart.material?.name === "front-lights") {
 				carPart.material.color = new THREE.Color(1, 1, 0);
 				carPart.material.emissive = new THREE.Color(1, 1, 0);
 				carPart.material.emissiveIntensity = 250.0;
@@ -41,7 +53,7 @@ export default function initCar(scene, model) {
 		});
 
 		const baseOffset = i / CARS.length;
-		const jitter = (Math.random() - 0.5) * (1 / CARS.length) * 0.5; // ≤ 50% of spacing
+		const jitter = (Math.random() - 0.5) * (1 / CARS.length) * 0.5;
 		const offset = (baseOffset + jitter + 1) % 1;
 		scene.add(clone);
 

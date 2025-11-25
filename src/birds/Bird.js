@@ -32,7 +32,7 @@ export default class Bird {
 
 	createMaterial() {
 		this.material = new CustomShaderMaterial({
-			baseMaterial: THREE.MeshStandardMaterial,
+			baseMaterial: THREE.MeshToonMaterial,
 			transparent: true,
 			side: THREE.DoubleSide,
 			vertexShader: birdVertexShader,
@@ -50,6 +50,7 @@ export default class Bird {
 		this.mesh = new THREE.Mesh(this.geometry, this.material);
 
 		this.mesh.receiveShadow = true;
+		this.mesh.castShadow = true;
 		this.mesh.rotation.x = -Math.PI * 0.5;
 		this.mesh.rotation.z = Math.PI;
 

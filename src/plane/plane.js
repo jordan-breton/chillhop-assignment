@@ -5,6 +5,25 @@ export default function initPlane(scene, model) {
 	const plane = model.scene.getObjectByName("plane");
 	const propeler = model.scene.getObjectByName("propeler");
 
+	plane.traverse((planePart) => {
+		if (planePart instanceof THREE.Mesh) {
+			planePart.castShadow = true;
+			planePart.receiveShadow = true;
+		}
+
+		if (planePart.material && !planePart.material?.name?.match('light')) {
+			planePart.material = new THREE.MeshToonMaterial({
+				color: planePart.material.color,
+				map: planePart.material.map,
+			});
+		}
+
+		if (planePart.material?.name?.match('light')) {
+			planePart.material.emissive = planePart.material.color;
+			planePart.material.emissiveIntensity = 2;
+		}
+	});
+
 	const points = pathPoints.map(p => new THREE.Vector3(p[0], p[2], -p[1]));
 	const curve = new THREE.CatmullRomCurve3(points, false);
 
@@ -14,6 +33,7 @@ export default function initPlane(scene, model) {
 	return {
 		update(time) {
 			propeler.rotation.z += 0.9;
+
 			const tGlobal = (time.elapsedSeconds % duration) / duration;
 			const t = tGlobal % 1;
 
@@ -22,30 +42,22 @@ export default function initPlane(scene, model) {
 
 			const tangent = curve.getTangent(t).normalize();
 
-			// Get position slightly ahead to calculate turn
 			const tAhead = Math.min(1, t + 0.01);
 			const posAhead = curve.getPoint(tAhead);
 
 			const toNext = new THREE.Vector3().subVectors(posAhead, pos).normalize();
 
-			// Calculate turn by taking cross product of current direction and next direction
 			const cross = new THREE.Vector3().crossVectors(tangent, toNext);
 
-			// Y component indicates left/right turn
-			const targetBankAngle = -cross.y * 10; // Reduced multiplier
+			const targetBankAngle = -cross.y * 10;
 
-			// Smoothly interpolate towards target bank angle
-			const smoothFactor = 0.05;
+			const smoothFactor = 0.01;
 			currentBankAngle += (targetBankAngle - currentBankAngle) * smoothFactor;
 
-			// Create target point for lookAt
 			const target = new THREE.Vector3().addVectors(pos, tangent);
-
-			// Apply lookAt
 			plane.lookAt(target);
 
-			// Apply smoothed roll (banking)
-			plane.rotateZ(THREE.MathUtils.clamp(currentBankAngle, -Math.PI / 4, Math.PI / 4)); // Reduced max bank to 45°
+			plane.rotateZ(THREE.MathUtils.clamp(currentBankAngle, -Math.PI / 4, Math.PI / 4));
 		}
 	};
 }
