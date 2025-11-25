@@ -4,9 +4,10 @@ import CustomShaderMaterial from 'three-custom-shader-material/vanilla';
 import fragmentShader from './shaders/fragment.glsl';
 import vertexShader from './shaders/vertex.glsl';
 
-export default function initSuburb(scene, model) {
+export default function initSuburb(config, scene) {
 	const mainGroup = scene.getObjectByName('main');
 	const mainTexture = loadUvTexture('/textures/FacadeBake_01(4K).webp');
+
 	const lightsTexture = loadUvTexture('/textures/FacadeBake_01(4K)-lights.png');
 	lightsTexture.magFilter = THREE.LinearFilter;
 	lightsTexture.minFilter = THREE.LinearFilter;
@@ -26,6 +27,17 @@ export default function initSuburb(scene, model) {
 			uLightsTexture: new THREE.Uniform(lightsTexture),
 		}
 	});
+
+	config.on(
+		'changed',
+		({detail: {
+			'lights.windows.main.color': color,
+			'lights.windows.main.intensity': intensity,
+		}}) => {
+			mainMaterial.uniforms.uLightIntensity.value = intensity;
+			mainMaterial.uniforms.uLightColor.value.set(color);
+		},
+	);
 
 	applyMaterialToGroup(mainGroup, mainMaterial);
 

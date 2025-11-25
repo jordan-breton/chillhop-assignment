@@ -4,7 +4,7 @@ import {applyMaterialToGroup, loadUvTexture} from '../utils/misc.js';
 import fragmentShader from './shaders/fragment.glsl';
 import vertexShader from './shaders/vertex.glsl';
 
-export default function initEnvironment(scene, model) {
+export default function initEnvironment(config, scene) {
 	const environmentGroup = scene.getObjectByName('environment');
 	const environmentTexture = loadUvTexture('/textures/EnvironmentBake_01(4K).webp');
 
@@ -27,6 +27,17 @@ export default function initEnvironment(scene, model) {
 			uLightsTexture: new THREE.Uniform(lightsTexture),
 		}
 	});
+
+	config.on(
+		'changed',
+		({detail: {
+			'lights.windows.bg.color': color,
+			'lights.windows.bg.intensity': intensity,
+		}}) => {
+			environmentMaterial.uniforms.uLightIntensity.value = intensity;
+			environmentMaterial.uniforms.uLightColor.value.set(color);
+		},
+	);
 
 	applyMaterialToGroup(environmentGroup, environmentMaterial);
 }

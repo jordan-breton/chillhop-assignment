@@ -15,8 +15,9 @@ import initEnvironment from './scene/environment.js';
 import initSuburb from './scene/suburb.js';
 import initBirds from './birds/Birds.js';
 import initCar from './car/car.js';
-import initWater from './scene/water.js';
+import initWater from './water/water.js';
 import initPlane from './plane/plane.js';
+import Config from './Config.js';
 
 const canvas = document.querySelector('canvas.webgl');
 
@@ -81,6 +82,8 @@ renderer.setPixelRatio(sizes.pixelRatio);
 
 //endregion
 
+const config = new Config(gui);
+
 function start(model) {
 	const time = new Time();
 	const camera = model.cameras[0];
@@ -90,13 +93,13 @@ function start(model) {
 
 	scene.add(camera, model.scene);
 
-	initEnvironment(scene, camera);
-	initSuburb(scene, camera);
-	initLights(scene, model);
+	initEnvironment(config, scene);
+	initSuburb(config, scene);
+	initLights(config, scene, model);
 
 	const vegetation       = initVegetation(scene, model);
 	const cameraController = initCameraController(canvas, camera, sizes);
-	const composer         = initPostprocessing(scene, camera, renderer, gui);
+	const composer         = initPostprocessing(config, scene, camera, renderer, gui);
 
 	const cat = initCat(
 		scene.getObjectByName('Cat'),
@@ -110,6 +113,8 @@ function start(model) {
 	const car = initCar(scene, model);
 	const plane = initPlane(scene, model);
 	const water = initWater(scene, model);
+
+	config.set('night');
 
 	const tick = () => {
 		stats.begin();
