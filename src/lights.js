@@ -76,9 +76,27 @@ function initStreetLights(config, model) {
 		}
 	);
 
+	/*const frustum = new THREE.Frustum();
+	const cameraViewProjectionMatrix = new THREE.Matrix4();
+	return {
+		update(camera) {
+			camera.updateMatrixWorld();
+			camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+			cameraViewProjectionMatrix.multiplyMatrices(
+				camera.projectionMatrix,
+				camera.matrixWorldInverse
+			);
+			frustum.setFromProjectionMatrix(cameraViewProjectionMatrix);
+			pointLights.forEach(light => {
+				const sphere = new THREE.Sphere(light.position, light.distance);
+				light.visible = frustum.intersectsSphere(sphere);
+			});
+		}
+	};*/
+
 	const frustum = new THREE.Frustum();
 	const cameraViewProjectionMatrix = new THREE.Matrix4();
-	const fovFactor = 1.1; // 10% wider
+	const fovFactor = 1.05; // 10% wider
 
 	return {
 		update(camera) {

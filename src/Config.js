@@ -2,6 +2,10 @@ import EventEmitter from './utils/EventEmitter.js';
 
 const CONFIGS = {
 	night: {
+		'music': '/music/night.mp3',
+
+		'sky.color': "#FFFFFF",
+
 		'bloom.intensity': 0.35,
 		'bloom.threshold': 0,
 
@@ -45,6 +49,10 @@ const CONFIGS = {
 		'water.glint.size': 900,
 	},
 	dawn: {
+		'music': '/music/sunrise.mp3',
+
+		'sky.color': "#ffffff",
+
 		'bloom.intensity': 0.35,
 		'bloom.threshold': 0,
 
@@ -88,6 +96,10 @@ const CONFIGS = {
 		'water.glint.size': 900,
 	},
 	day: {
+		'music': '/music/day.mp3',
+
+		'sky.color': "#ffffff",
+
 		'bloom.intensity': 0.35,
 		'bloom.threshold': 0,
 

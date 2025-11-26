@@ -4,7 +4,7 @@ import {applyMaterialToGroup, loadUvTexture} from '../utils/misc.js';
 import fragmentShader from './shaders/fragment.glsl';
 import vertexShader from './shaders/vertex.glsl';
 
-export default function initEnvironment(config, scene) {
+export default function initEnvironment(config, scene, model) {
 	const environmentGroup = scene.getObjectByName('environment');
 	const environmentTexture = loadUvTexture('/textures/EnvironmentBake_01(4K).webp');
 
@@ -31,13 +31,21 @@ export default function initEnvironment(config, scene) {
 	config.on(
 		'changed',
 		({detail: {
+			'sky.color': skyColor,
 			'lights.windows.bg.color': color,
 			'lights.windows.bg.intensity': intensity,
 		}}) => {
+			sky.material.color.set(skyColor);
+
 			environmentMaterial.uniforms.uLightIntensity.value = intensity;
 			environmentMaterial.uniforms.uLightColor.value.set(color);
 		},
 	);
 
 	applyMaterialToGroup(environmentGroup, environmentMaterial);
+
+	const sky = model.scene.getObjectByName('Sky');
+	sky.material = new THREE.MeshToonMaterial({
+		map: environmentTexture,
+	});
 }

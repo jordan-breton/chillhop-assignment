@@ -18,6 +18,7 @@ import initWater from './water/water.js';
 import initPlane from './plane/plane.js';
 import Config from './Config.js';
 import {getGPUTier} from 'detect-gpu';
+import initAudio from './audio.js';
 
 const canvas = document.querySelector('canvas.webgl');
 
@@ -115,9 +116,11 @@ function start(model) {
 
 	scene.add(camera, model.scene);
 
-	initEnvironment(config, scene);
-	initSuburb(config, scene);
+	const audio = initAudio(config);
 	const lights = initLights(config, scene, model);
+
+	initEnvironment(config, scene, model);
+	initSuburb(config, scene);
 
 	const vegetation       = initVegetation(scene, model);
 	const cameraController = initCameraController(canvas, camera, sizes);
@@ -171,6 +174,15 @@ function start(model) {
 			renderer.shadowMap.enabled = false;
 			lights.main.disableShadowCasting();
 		}
+	});
+
+	const overlay = document.getElementById('overlay');
+	const enterButton = overlay.querySelector('button');
+
+	enterButton.addEventListener('click', (e) => {
+		overlay.style.display = 'none';
+
+		audio.start();
 	});
 }
 
