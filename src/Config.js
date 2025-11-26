@@ -1,63 +1,11 @@
 import EventEmitter from './utils/EventEmitter.js';
 
 const CONFIGS = {
-	night: {
-		'music': '/music/night.mp3',
-
-		'sky.color.start': "#1C262F",
-		'sky.color.end': "#213E50",
-
-		'bloom.intensity': 0.35,
-		'bloom.threshold': 0,
-
-		'lights.ambient.enabled': false,
-		'lights.ambient.color': '#F2E2CB',
-		'lights.ambient.intensity': 0.4,
-
-		'lights.main.enabled': true,
-		'lights.main.color': '#213E50',
-		'lights.main.intensity': 2,
-
-		'lights.street.enabled': true,
-		'lights.street.intensity': 1.0,
-		'lights.street.color': "#8F564D",
-		'lights.street.decay': 4,
-
-		'lights.bookStore.enabled': true,
-		'lights.bookStore.intensity': 0.2,
-		'lights.bookStore.color': "#9C6258",
-		'lights.bookStore.distance': 1,
-
-		'lights.store.enabled': true,
-		'lights.store.intensity': 0.3,
-		'lights.store.color': "#9C6258",
-		'lights.store.distance': 1,
-
-		'lights.fg.enabled': true,
-		'lights.fg.intensity': 6,
-		'lights.fg.color': "#9C6258",
-		'lights.fg.distance': 1.8,
-
-		'lights.windows.main.enabled': true,
-		'lights.windows.main.intensity': 250,
-		'lights.windows.main.color': '#8F564D',
-
-		'lights.windows.bg.enabled': true,
-		'lights.windows.bg.intensity': 125,
-		'lights.windows.bg.color': '#985D55',
-
-		'lights.cars.intensity': 1,
-		'lights.plane.intensity': 1,
-
-		'water.glint.intensity': 2,
-		'water.glint.color': "#f8d5ae",
-		'water.glint.size': 1050,
-	},
 	dawn: {
 		'music': '/music/sunrise.mp3',
 
-		'sky.color.start': "#9D625A",
-		'sky.color.end': "#5D476B",
+		'sky.color.end': "#9D625A",
+		'sky.color.start': "#5D476B",
 
 		'bloom.intensity': 0.45,
 		'bloom.threshold': 0.3338,
@@ -149,10 +97,62 @@ const CONFIGS = {
 		'lights.cars.intensity': 0,
 		'lights.plane.intensity': 0,
 
-		'water.glint.intensity': 1500,
+		'water.glint.intensity': 2500,
+		'water.glint.color': "#ffffff",
+		'water.glint.size': 650,
+	},
+	night: {
+		'music': '/music/night.mp3',
+
+		'sky.color.start': "#1C262F",
+		'sky.color.end': "#213E50",
+
+		'bloom.intensity': 0.35,
+		'bloom.threshold': 0,
+
+		'lights.ambient.enabled': false,
+		'lights.ambient.color': '#F2E2CB',
+		'lights.ambient.intensity': 0.4,
+
+		'lights.main.enabled': true,
+		'lights.main.color': '#213E50',
+		'lights.main.intensity': 2,
+
+		'lights.street.enabled': true,
+		'lights.street.intensity': 1.0,
+		'lights.street.color': "#8F564D",
+		'lights.street.decay': 4,
+
+		'lights.bookStore.enabled': true,
+		'lights.bookStore.intensity': 0.2,
+		'lights.bookStore.color': "#9C6258",
+		'lights.bookStore.distance': 1,
+
+		'lights.store.enabled': true,
+		'lights.store.intensity': 0.3,
+		'lights.store.color': "#9C6258",
+		'lights.store.distance': 1,
+
+		'lights.fg.enabled': true,
+		'lights.fg.intensity': 6,
+		'lights.fg.color': "#9C6258",
+		'lights.fg.distance': 1.8,
+
+		'lights.windows.main.enabled': true,
+		'lights.windows.main.intensity': 250,
+		'lights.windows.main.color': '#8F564D',
+
+		'lights.windows.bg.enabled': true,
+		'lights.windows.bg.intensity': 125,
+		'lights.windows.bg.color': '#985D55',
+
+		'lights.cars.intensity': 1,
+		'lights.plane.intensity': 1,
+
+		'water.glint.intensity': 2,
 		'water.glint.color': "#f8d5ae",
-		'water.glint.size': 900,
-	}
+		'water.glint.size': 1050,
+	},
 };
 
 export default class Config extends EventEmitter {
@@ -175,12 +175,6 @@ export default class Config extends EventEmitter {
 			);
 
 			presetFolder.close();
-		});
-
-		const folder = gui.addFolder('Ambience');
-
-		Object.keys(CONFIGS).forEach((configName) => {
-			folder.add(buttons, configName);
 		});
 	}
 

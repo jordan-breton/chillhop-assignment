@@ -21,16 +21,24 @@ import {getGPUTier} from 'detect-gpu';
 import initAudio from './audio.js';
 
 const canvas = document.querySelector('canvas.webgl');
+const href = window.location.href;
 
 //region Perf monitor
 
 const stats = new Stats();
-document.body.appendChild(stats.dom);
+
+if (href.match('perfs')) {
+	document.body.appendChild(stats.dom);
+}
 
 //endregion
 //region Debug gui
 
 const gui = new GUI({ width: 325 });
+
+if (!href.match('debug')) {
+	gui.domElement.style.display = 'none';
+}
 
 //endregion
 //region Scene
@@ -140,7 +148,7 @@ function start(model) {
 	const plane = initPlane(config, scene, model);
 	const water = initWater(config, scene, model);
 
-	config.set('day');
+	config.set('dawn');
 
 	const tick = () => {
 		stats.begin();
@@ -179,7 +187,6 @@ function start(model) {
 	const overlay = document.getElementById('overlay');
 	const enterButton = overlay.querySelector('button');
 
-	overlay.style.display = 'none';
 	enterButton.addEventListener('click', (e) => {
 		overlay.style.display = 'none';
 

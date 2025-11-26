@@ -41,7 +41,7 @@ export default class Bird {
 				uTime: { value: 0 },
 				uSize: { value: 0.04 },
 				uTexture: { value: this.texture },
-				uColor: { value: new THREE.Color('#d2d2d2') },
+				uColor: { value: new THREE.Color('#ffffff') },
 			}
 		});
 	}

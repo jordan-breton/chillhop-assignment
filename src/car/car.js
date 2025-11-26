@@ -2,10 +2,10 @@ import * as THREE from "three";
 import pathPoints from "./carpath.json";
 
 const CARS = [
-	{ color: "#d85d5d" },
-	{ color: "#cfcf6e" },
-	{ color: "#97e44f" },
-	{ color: "#78cabb" },
+	{ color: "#8E554A" },
+	{ color: "#4D8666" },
+	{ color: "#FFBC6E" },
+	{ color: "#357080" },
 ];
 
 export default function initCars(config, scene, model) {
