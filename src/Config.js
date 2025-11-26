@@ -106,50 +106,48 @@ const CONFIGS = {
 	day: {
 		'music': '/music/day.mp3',
 
-		'sky.color.start': "#FFFFFF",
-		'sky.color.end': "#000000",
+		'sky.color.end': "#EDE7D9",
+		'sky.color.start': "#8BD8D2",
 
-		'bloom.intensity': 0.35,
-		'bloom.threshold': 0,
+		'bloom.intensity': 0.4,
+		'bloom.threshold': 0.649,
 
-		'lights.ambient.enabled': false,
-		'lights.ambient.color': '#F2E2CB',
+		'lights.ambient.enabled': true,
+		'lights.ambient.color': '#f0e4d4',
 		'lights.ambient.intensity': 0.4,
 
 		'lights.main.enabled': true,
-		'lights.main.color': '#213E50',
-		'lights.main.intensity': 2,
+		'lights.main.color': '#FFC681',
+		'lights.main.intensity': 4.57,
 
-		'lights.street.enabled': true,
+		'lights.street.enabled': false,
 		'lights.street.intensity': 1.0,
 		'lights.street.color': "#8F564D",
 		'lights.street.decay': 4.0,
 
-		'lights.bookStore.enabled': true,
+		'lights.bookStore.enabled': false,
 		'lights.bookStore.intensity': 0.2,
 		'lights.bookStore.color': "#9C6258",
 		'lights.bookStore.distance': 1,
 
-		'lights.store.enabled': true,
+		'lights.store.enabled': false,
 		'lights.store.intensity': 0.3,
 		'lights.store.color': "#9C6258",
 		'lights.store.distance': 1,
 
 		'lights.fg.enabled': true,
 		'lights.fg.intensity': 6,
-		'lights.fg.color': "#9C6258",
+		'lights.fg.color': "#ffa50a",
 		'lights.fg.distance': 1.8,
 
-		'lights.windows.main.enabled': true,
-		'lights.windows.main.intensity': 250,
+		'lights.windows.main.intensity': 0,
 		'lights.windows.main.color': '#8F564D',
 
-		'lights.windows.bg.enabled': false,
-		'lights.windows.bg.intensity': 125,
+		'lights.windows.bg.intensity': 0,
 		'lights.windows.bg.color': '#985D55',
 
-		'lights.cars.intensity': 1,
-		'lights.plane.intensity': 1,
+		'lights.cars.intensity': 0,
+		'lights.plane.intensity': 0,
 
 		'water.glint.intensity': 1500,
 		'water.glint.color': "#f8d5ae",
