@@ -1,5 +1,27 @@
 import * as THREE from 'three';
 
+function initAmbientLight(config, scene) {
+	const ambientLight = new THREE.AmbientLight(
+		new THREE.Color('#F2E2CB'),
+		0.5,
+	);
+
+	scene.add(ambientLight);
+
+	config.on(
+		'changed',
+		({detail: {
+			'lights.ambient.enabled': enabled,
+			'lights.ambient.color': color,
+			'lights.ambient.intensity': intensity,
+		}}) => {
+			ambientLight.visible = enabled;
+			ambientLight.color.set(color);
+			ambientLight.intensity = intensity;
+		}
+	)
+}
+
 function initMainLight(config, scene) {
 	let directionalLight = new THREE.DirectionalLight(
 		'#213E50',
@@ -59,6 +81,8 @@ function initStreetLights(config, model) {
 		pointLights.push(pointLight);
 	});
 
+	let arePointLightsVisible = false;
+
 	config.on(
 		'changed',
 		({detail: {
@@ -67,6 +91,8 @@ function initStreetLights(config, model) {
 			'lights.street.intensity': intensity,
 			'lights.street.decay': decay,
 		}}) => {
+			arePointLightsVisible = enabled;
+
 			pointLights.forEach((pointLight) => {
 				pointLight.visible = enabled;
 				pointLight.color.set(color);
@@ -76,37 +102,20 @@ function initStreetLights(config, model) {
 		}
 	);
 
-	/*const frustum = new THREE.Frustum();
-	const cameraViewProjectionMatrix = new THREE.Matrix4();
-	return {
-		update(camera) {
-			camera.updateMatrixWorld();
-			camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
-			cameraViewProjectionMatrix.multiplyMatrices(
-				camera.projectionMatrix,
-				camera.matrixWorldInverse
-			);
-			frustum.setFromProjectionMatrix(cameraViewProjectionMatrix);
-			pointLights.forEach(light => {
-				const sphere = new THREE.Sphere(light.position, light.distance);
-				light.visible = frustum.intersectsSphere(sphere);
-			});
-		}
-	};*/
-
 	const frustum = new THREE.Frustum();
 	const cameraViewProjectionMatrix = new THREE.Matrix4();
-	const fovFactor = 1.05; // 10% wider
+	const fovFactor = 1.05;
 
 	return {
 		update(camera) {
+			if (!arePointLightsVisible) return;
+
 			camera.updateMatrixWorld();
 			camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
 
-			// clone projection matrix and scale fov for wider frustum
 			const proj = camera.projectionMatrix.clone();
-			proj.elements[5] /= fovFactor; // scale vertical fov
-			proj.elements[0] /= fovFactor; // scale horizontal fov
+			proj.elements[5] /= fovFactor;
+			proj.elements[0] /= fovFactor;
 
 			cameraViewProjectionMatrix.multiplyMatrices(proj, camera.matrixWorldInverse);
 			frustum.setFromProjectionMatrix(cameraViewProjectionMatrix);
@@ -220,6 +229,7 @@ function initForegroundLight(config, scene, model) {
 
 export default function initLights(config, scene, model) {
 	return {
+		ambient: initAmbientLight(config, scene),
 		main: initMainLight(config, scene),
 		street: initStreetLights(config, model),
 		bookStore: initBookStoreLight(config, scene),

@@ -27,6 +27,7 @@ export default function initCars(config, scene, model) {
 		clone.traverse(carPart => {
 			if (carPart instanceof THREE.Mesh) {
 				carPart.castShadow = true;
+				carPart.receiveShadow = true;
 			}
 
 			if (carPart.material) {

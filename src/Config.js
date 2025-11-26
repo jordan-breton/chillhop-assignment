@@ -4,10 +4,15 @@ const CONFIGS = {
 	night: {
 		'music': '/music/night.mp3',
 
-		'sky.color': "#FFFFFF",
+		'sky.color.start': "#1C262F",
+		'sky.color.end': "#213E50",
 
 		'bloom.intensity': 0.35,
 		'bloom.threshold': 0,
+
+		'lights.ambient.enabled': false,
+		'lights.ambient.color': '#F2E2CB',
+		'lights.ambient.intensity': 0.4,
 
 		'lights.main.enabled': true,
 		'lights.main.color': '#213E50',
@@ -44,64 +49,72 @@ const CONFIGS = {
 		'lights.cars.intensity': 1,
 		'lights.plane.intensity': 1,
 
-		'water.glint.intensity': 1500,
+		'water.glint.intensity': 2,
 		'water.glint.color': "#f8d5ae",
-		'water.glint.size': 900,
+		'water.glint.size': 1050,
 	},
 	dawn: {
 		'music': '/music/sunrise.mp3',
 
-		'sky.color': "#ffffff",
+		'sky.color.start': "#9D625A",
+		'sky.color.end': "#5D476B",
 
-		'bloom.intensity': 0.35,
-		'bloom.threshold': 0,
+		'bloom.intensity': 0.45,
+		'bloom.threshold': 0.3338,
+
+		'lights.ambient.enabled': true,
+		'lights.ambient.color': '#472a65',
+		'lights.ambient.intensity': 5.8,
 
 		'lights.main.enabled': true,
-		'lights.main.color': '#213E50',
-		'lights.main.intensity': 2,
+		'lights.main.color': '#FFC681',
+		'lights.main.intensity': 0.53,
 
 		'lights.street.enabled': true,
-		'lights.street.intensity': 1.0,
-		'lights.street.color': "#8F564D",
+		'lights.street.intensity': 0.96,
+		'lights.street.color': "#ffa50a",
 		'lights.street.decay': 2.0,
 
 		'lights.bookStore.enabled': true,
-		'lights.bookStore.intensity': 0.2,
-		'lights.bookStore.color': "#9C6258",
+		'lights.bookStore.intensity': 0.16,
+		'lights.bookStore.color': "#897098",
 		'lights.bookStore.distance': 1,
 
 		'lights.store.enabled': true,
-		'lights.store.intensity': 0.3,
-		'lights.store.color': "#9C6258",
+		'lights.store.intensity': 0.27,
+		'lights.store.color': "#897098",
 		'lights.store.distance': 1,
 
 		'lights.fg.enabled': true,
-		'lights.fg.intensity': 6,
-		'lights.fg.color': "#9C6258",
-		'lights.fg.distance': 1.8,
+		'lights.fg.intensity': 50,
+		'lights.fg.color': "#ffa50a",
+		'lights.fg.distance': 1.48,
 
-		'lights.windows.main.enabled': true,
-		'lights.windows.main.intensity': 250,
-		'lights.windows.main.color': '#8F564D',
+		'lights.windows.main.intensity': 8,
+		'lights.windows.main.color': '#897098',
 
-		'lights.windows.bg.enabled': false,
-		'lights.windows.bg.intensity': 125,
-		'lights.windows.bg.color': '#985D55',
+		'lights.windows.bg.intensity': 10,
+		'lights.windows.bg.color': '#897098',
 
 		'lights.cars.intensity': 1,
 		'lights.plane.intensity': 1,
 
-		'water.glint.intensity': 1500,
-		'water.glint.color': "#f8d5ae",
-		'water.glint.size': 900,
+		'water.glint.intensity': 10,
+		'water.glint.color': "#ffffff",
+		'water.glint.size': 1050,
 	},
 	day: {
 		'music': '/music/day.mp3',
 
-		'sky.color': "#ffffff",
+		'sky.color.start': "#FFFFFF",
+		'sky.color.end': "#000000",
 
 		'bloom.intensity': 0.35,
 		'bloom.threshold': 0,
+
+		'lights.ambient.enabled': false,
+		'lights.ambient.color': '#F2E2CB',
+		'lights.ambient.intensity': 0.4,
 
 		'lights.main.enabled': true,
 		'lights.main.color': '#213E50',
@@ -175,6 +188,7 @@ export default class Config extends EventEmitter {
 
 	#addConfigToGui(folder, config) {
 		this.#addBloomGui(folder, config);
+		this.#addSkyConfigToGui(folder, config);
 		this.#addLightsConfigToGui(folder, config);
 		this.#addWaterConfigToGui(folder, config);
 
@@ -187,6 +201,18 @@ export default class Config extends EventEmitter {
 		});
 	}
 
+	#addSkyConfigToGui(folder, config) {
+		const sky = folder.addFolder('Sky');
+
+		sky.addColor(config, 'sky.color.start')
+			.name('start color');
+
+		sky.addColor(config, 'sky.color.end')
+			.name('end color');
+
+		sky.close();
+	}
+
 	#addWaterConfigToGui(folder, config) {
 		const water = folder.addFolder('Water');
 
@@ -197,13 +223,13 @@ export default class Config extends EventEmitter {
 			.name('Glint intensity')
 			.min(0)
 			.max(2500)
-			.step(10);
+			.step(0.01);
 
 		water.add(config, 'water.glint.size')
 			.name('Glint size')
 			.min(0)
 			.max(2000)
-			.step(10);
+			.step(0.01);
 
 		water.close();
 	}
@@ -211,6 +237,7 @@ export default class Config extends EventEmitter {
 	#addLightsConfigToGui(folder, config) {
 		const lightsFolder = folder.addFolder('Lights');
 
+		this.#addAmbientLightGui(lightsFolder, config);
 		this.#addMainLightsGui(lightsFolder, config);
 		this.#addStreetLightsGui(lightsFolder, config);
 		this.#addBookStoreLightsGui(lightsFolder, config);
@@ -236,6 +263,24 @@ export default class Config extends EventEmitter {
 			.step(0.01);
 
 		lightsFolder.close();
+	}
+
+	#addAmbientLightGui(folder, config) {
+		const ambient = folder.addFolder('Ambient');
+
+		ambient.add(config, 'lights.ambient.enabled')
+			.name('enabled');
+
+		ambient.addColor(config, 'lights.ambient.color')
+			.name('color');
+
+		ambient.add(config, 'lights.ambient.intensity')
+			.name('intensity')
+			.min(0)
+			.max(8)
+			.step(0.1);
+
+		ambient.close();
 	}
 
 	#addBloomGui(folder, config) {
@@ -358,7 +403,7 @@ export default class Config extends EventEmitter {
 		foreground.add(config, 'lights.fg.intensity')
 			.name('intensity')
 			.min(0.0)
-			.max(10.0)
+			.max(50.0)
 			.step(0.01);
 
 		foreground.add(config, 'lights.fg.distance')
@@ -380,7 +425,7 @@ export default class Config extends EventEmitter {
 			.name('intensity')
 			.min(0.0)
 			.max(500.0)
-			.step(5);
+			.step(0.01);
 
 		main.close();
 	}

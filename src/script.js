@@ -140,7 +140,7 @@ function start(model) {
 	const plane = initPlane(config, scene, model);
 	const water = initWater(config, scene, model);
 
-	config.set('night');
+	config.set('day');
 
 	const tick = () => {
 		stats.begin();
@@ -179,6 +179,7 @@ function start(model) {
 	const overlay = document.getElementById('overlay');
 	const enterButton = overlay.querySelector('button');
 
+	overlay.style.display = 'none';
 	enterButton.addEventListener('click', (e) => {
 		overlay.style.display = 'none';
 

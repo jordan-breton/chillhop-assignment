@@ -6,9 +6,9 @@ import fragmentShader from './shaders/fragment.glsl';
 export default function initWater(config, scene, model) {
 	const water = model.scene.getObjectByName("Water");
 
-	const waterMaterial = new CustomShaderMaterial({
-		baseMaterial: THREE.MeshToonMaterial,
-		blending: THREE.AdditiveBlending,
+	const waterMaterial = new THREE.ShaderMaterial({
+		blending: THREE.NormalBlending,
+		transparent: true,
 		uniforms: {
 			uTime: { value: 0 },
 			uColor: { value: new THREE.Color("#f8d5ae") },

@@ -20,6 +20,8 @@ float noise(vec2 p) {
 
 void main() {
     float n = noise(vUv * uNoiseScale - vec2(uTime * 0.1, uTime * 0.1));
-    float glint = smoothstep(0.92, 1.0, n) * uGlintIntensity;
-    csm_DiffuseColor = vec4(uColor + vec3(glint), 0.2);
+    float glintPattern = smoothstep(0.92, 1.0, n);
+    float glint = glintPattern * uGlintIntensity;
+
+    gl_FragColor = vec4(glintPattern) * uGlintIntensity;
 }
