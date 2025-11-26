@@ -3,8 +3,7 @@ import GUI from 'lil-gui';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import Stats from 'stats.js';
 import Time from './utils/Time.js';
-import Birds from './birds/Birds.js';
-import {applyMaterialToGroup, loadUvTexture} from './utils/misc.js';
+import {loadUvTexture} from './utils/misc.js';
 import { RGBELoader } from 'three/addons/loaders/RGBELoader.js'
 import initLights from './lights.js';
 import initPostprocessing from './postprocess.js';
@@ -18,6 +17,7 @@ import initCars from './car/car.js';
 import initWater from './water/water.js';
 import initPlane from './plane/plane.js';
 import Config from './Config.js';
+import {getGPUTier} from 'detect-gpu';
 
 const canvas = document.querySelector('canvas.webgl');
 
@@ -45,6 +45,8 @@ const gltfLoader = new GLTFLoader();
 
 //endregion
 //region Sizes
+let composer;
+
 const sizes = {
 	width: 0,
 	height: 0,
@@ -62,6 +64,10 @@ updateSizes();
 window.addEventListener('resize', () => {
 	updateSizes();
 
+	if (composer) {
+		composer.setSize(sizes.width, sizes.height);
+	}
+
 	renderer.setSize(sizes.width, sizes.height);
 	renderer.setPixelRatio(sizes.pixelRatio);
 });
@@ -71,7 +77,8 @@ window.addEventListener('resize', () => {
 
 const renderer = new THREE.WebGLRenderer({
 	canvas: canvas,
-	alpha: true,
+	alpha: false,
+	antialias: false,
 });
 renderer.setClearColor(0x000000, 0);
 renderer.shadowMap.enabled = true;
@@ -84,6 +91,21 @@ renderer.setPixelRatio(sizes.pixelRatio);
 
 const config = new Config(gui);
 
+//region DayTime buttons binding
+
+const buttons = document.querySelectorAll('.weather-btn');
+
+buttons.forEach(btn => {
+	btn.addEventListener('pointerdown', (e) => {
+		config.set(btn.getAttribute('data-time'));
+
+		buttons.forEach(btn => btn.classList.remove('selected'));
+		btn.classList.add('selected');
+	});
+});
+
+//endregion
+
 function start(model) {
 	const time = new Time();
 	const camera = model.cameras[0];
@@ -95,11 +117,12 @@ function start(model) {
 
 	initEnvironment(config, scene);
 	initSuburb(config, scene);
-	initLights(config, scene, model);
+	const lights = initLights(config, scene, model);
 
 	const vegetation       = initVegetation(scene, model);
 	const cameraController = initCameraController(canvas, camera, sizes);
-	const composer         = initPostprocessing(config, scene, camera, renderer, gui);
+
+	composer = initPostprocessing(config, scene, camera, renderer, gui);
 
 	const cat = initCat(
 		scene.getObjectByName('Cat'),
@@ -121,6 +144,7 @@ function start(model) {
 
 		time.tick();
 
+		lights.update(camera);
 		vegetation.update(time);
 		cat.update(time);
 		birds.update(time);
@@ -137,6 +161,17 @@ function start(model) {
 	};
 
 	tick();
+
+	getGPUTier().then(({ tier, isMobile, type }) => {
+		if (type === 'FALLBACK') {
+			return;
+		}
+
+		if (tier < 2) {
+			renderer.shadowMap.enabled = false;
+			lights.main.disableShadowCasting();
+		}
+	});
 }
 
 gltfLoader.load('/model.glb', start);

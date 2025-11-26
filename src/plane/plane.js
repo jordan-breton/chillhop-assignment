@@ -42,21 +42,24 @@ export default function initPlane(config, scene, model) {
 	const curve = new THREE.CatmullRomCurve3(points, false);
 
 	const duration = 50;
+	let progress = 0;
 	let currentBankAngle = 0;
 
 	return {
 		update(time) {
+			const delta = time.deltaSeconds;
+
 			propeller.rotation.z += 0.9;
 
-			const tGlobal = (time.elapsedSeconds % duration) / duration;
-			const t = tGlobal % 1;
+			const speed = 1 / duration;
+			progress = (progress + speed * delta) % 1;
 
-			const pos = curve.getPoint(t);
+			const pos = curve.getPoint(progress);
 			plane.position.copy(pos);
 
-			const tangent = curve.getTangent(t).normalize();
+			const tangent = curve.getTangent(progress).normalize();
 
-			const tAhead = Math.min(1, t + 0.01);
+			const tAhead = Math.min(1, progress + 0.01);
 			const posAhead = curve.getPoint(tAhead);
 
 			const toNext = new THREE.Vector3().subVectors(posAhead, pos).normalize();

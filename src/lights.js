@@ -31,6 +31,19 @@ function initMainLight(config, scene) {
 			directionalLight.intensity = intensity;
 		}
 	);
+
+	return {
+		disableShadowCasting() {
+			directionalLight.castShadow = false;
+			directionalLight.shadow.map.dispose();
+			directionalLight.shadow.map = null;
+		},
+		downScaleShadowMap(width, height) {
+			directionalLight.shadow.map.dispose();
+			directionalLight.shadow.mapSize.set(width, height);
+			directionalLight.shadow.map = null;
+		}
+	};
 }
 
 function initStreetLights(config, model) {
@@ -62,6 +75,23 @@ function initStreetLights(config, model) {
 			});
 		}
 	);
+
+	const frustum = new THREE.Frustum();
+	const cameraViewProjectionMatrix = new THREE.Matrix4();
+
+	return {
+		update(camera) {
+			camera.updateMatrixWorld();
+			camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
+			cameraViewProjectionMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+			frustum.setFromProjectionMatrix(cameraViewProjectionMatrix);
+
+			pointLights.forEach(light => {
+				const sphere = new THREE.Sphere(light.position, light.distance);
+				light.visible = frustum.intersectsSphere(sphere);
+			});
+		}
+	};
 }
 
 function initBookStoreLight(config, scene) {
@@ -88,6 +118,12 @@ function initBookStoreLight(config, scene) {
 			bookStoreLight.distance = distance;
 		},
 	);
+
+	return {
+		disable() {
+			bookStoreLight.visible = false;
+		}
+	};
 }
 
 function initStoreLight(config, scene) {
@@ -114,6 +150,12 @@ function initStoreLight(config, scene) {
 			storeLight.distance = distance;
 		},
 	);
+
+	return {
+		disable() {
+			storeLight.visible = false;
+		}
+	};
 }
 
 function initForegroundLight(config, scene, model) {
@@ -143,12 +185,23 @@ function initForegroundLight(config, scene, model) {
 			fgPointLight.distance = distance;
 		},
 	);
+
+	return {
+		disable() {
+			fgPointLight.visible = false;
+		}
+	};
 }
 
 export default function initLights(config, scene, model) {
-	initMainLight(config, scene);
-	initStreetLights(config, model);
-	initBookStoreLight(config, scene);
-	initStoreLight(config, scene);
-	initForegroundLight(config, scene, model);
+	return {
+		main: initMainLight(config, scene),
+		street: initStreetLights(config, model),
+		bookStore: initBookStoreLight(config, scene),
+		store: initStoreLight(config, scene),
+		fg: initForegroundLight(config, scene, model),
+		update(camera) {
+			this.street.update(camera);
+		}
+	}
 }

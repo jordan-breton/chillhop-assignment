@@ -44,7 +44,7 @@ const CONFIGS = {
 		'water.glint.color': "#f8d5ae",
 		'water.glint.size': 900,
 	},
-	sunrise: {
+	dawn: {
 		'bloom.intensity': 0.35,
 		'bloom.threshold': 0,
 

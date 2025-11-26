@@ -79,18 +79,19 @@ export default function initCars(config, scene, model) {
 
 	return {
 		update(time) {
-			const tGlobal = (time.elapsedSeconds % duration) / duration;
+			const delta = time.deltaSeconds;
+			const speed = 1 / duration;
 
-			for (const { mesh, offset } of cars) {
-				const t = (tGlobal + offset) % 1;
+			for (const car of cars) {
+				car.offset = (car.offset + speed * delta) % 1;
 
-				const pos = curve.getPoint(t);
-				mesh.position.copy(pos);
+				const pos = curve.getPoint(car.offset);
+				car.mesh.position.copy(pos);
 
-				const tangent = curve.getTangent(t);
-				mesh.quaternion.setFromUnitVectors(
+				const tangent = curve.getTangent(car.offset).normalize();
+				car.mesh.quaternion.setFromUnitVectors(
 					new THREE.Vector3(0, 0, 1),
-					tangent.normalize()
+					tangent
 				);
 			}
 		},
