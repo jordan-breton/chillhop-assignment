@@ -78,12 +78,19 @@ function initStreetLights(config, model) {
 
 	const frustum = new THREE.Frustum();
 	const cameraViewProjectionMatrix = new THREE.Matrix4();
+	const fovFactor = 1.1; // 10% wider
 
 	return {
 		update(camera) {
 			camera.updateMatrixWorld();
 			camera.matrixWorldInverse.copy(camera.matrixWorld).invert();
-			cameraViewProjectionMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+
+			// clone projection matrix and scale fov for wider frustum
+			const proj = camera.projectionMatrix.clone();
+			proj.elements[5] /= fovFactor; // scale vertical fov
+			proj.elements[0] /= fovFactor; // scale horizontal fov
+
+			cameraViewProjectionMatrix.multiplyMatrices(proj, camera.matrixWorldInverse);
 			frustum.setFromProjectionMatrix(cameraViewProjectionMatrix);
 
 			pointLights.forEach(light => {
