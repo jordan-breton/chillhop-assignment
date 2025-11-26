@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedural terrain</title>
+  <script type="module" crossorigin src="./assets/index-BBjSwvEj.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BI6fxNt3.css">
+</head>
+<body>
+		<div class="placeholder-bg dark"></div>
+    <canvas class="webgl"></canvas>
+		<div class="container">
+				<button class="weather-btn selected" data-time="dawn">
+						<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background: transparent;">
+								<defs>
+										<linearGradient id="dawnBg" x1="0%" y1="0%" x2="0%" y2="100%">
+												<stop offset="0%" style="stop-color:#c8e0d8;stop-opacity:1" />
+												<stop offset="35%" style="stop-color:#ffedb3;stop-opacity:1" />
+												<stop offset="100%" style="stop-color:#a8c9b8;stop-opacity:1" />
+										</linearGradient>
+										<radialGradient id="dawnSun">
+												<stop offset="0%" style="stop-color:#fffef0;stop-opacity:1" />
+												<stop offset="100%" style="stop-color:#fff9c4;stop-opacity:1" />
+										</radialGradient>
+										<filter id="dawnGlow">
+												<feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+												<feMerge>
+														<feMergeNode in="coloredBlur"/>
+														<feMergeNode in="SourceGraphic"/>
+												</feMerge>
+										</filter>
+								</defs>
+
+								<clipPath id="dawnClip">
+										<circle cx="100" cy="100" r="100"/>
+								</clipPath>
+
+								<g clip-path="url(#dawnClip)">
+										<!-- Background Circle -->
+										<circle cx="100" cy="100" r="100" fill="url(#dawnBg)"/>
+
+										<!-- Clouds -->
+										<ellipse class="cloud" cx="40" cy="30" rx="25" ry="10" fill="rgba(255,255,255,0.7)"/>
+										<ellipse class="cloud" cx="155" cy="50" rx="20" ry="8" fill="rgba(255,255,255,0.7)" style="animation-delay: 0.5s"/>
+
+										<!-- Sun with glow -->
+										<circle cx="100" cy="120" r="30" fill="url(#dawnSun)" filter="url(#dawnGlow)"/>
+
+										<!-- Mountains -->
+										<polygon points="20,200 70,160 120,200" fill="#5d8a6d"/>
+										<polygon points="80,200 140,150 200,200" fill="#6d9a7d"/>
+								</g>
+						</svg>
+				</button>
+
+				<button class="weather-btn" data-time="day">
+						<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background: transparent;">
+								<defs>
+										<linearGradient id="dayBg" x1="0%" y1="0%" x2="0%" y2="100%">
+												<stop offset="0%" style="stop-color:#87ceeb;stop-opacity:1" />
+												<stop offset="100%" style="stop-color:#b8daef;stop-opacity:1" />
+										</linearGradient>
+										<filter id="sunGlow">
+												<feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+												<feMerge>
+														<feMergeNode in="coloredBlur"/>
+														<feMergeNode in="SourceGraphic"/>
+												</feMerge>
+										</filter>
+								</defs>
+
+								<!-- Clip path for circular mask -->
+								<clipPath id="dayClip">
+										<circle cx="100" cy="100" r="100"/>
+								</clipPath>
+
+								<g clip-path="url(#dayClip)">
+										<!-- Background Circle -->
+										<circle cx="100" cy="100" r="100" fill="url(#dayBg)"/>
+
+										<!-- Sun rays -->
+										<g transform="translate(100, 100)">
+												<!-- Top -->
+												<polygon points="0,-80 -4,-55 4,-55" fill="#fdb347"/>
+												<!-- Northeast (45°) -->
+												<polygon points="56,-56 41,-45 48,-37" fill="#fdb347"/>
+												<!-- Right (90°) -->
+												<polygon points="80,0 55,-4 55,4" fill="#fdb347"/>
+												<!-- Bottom-right (135°) -->
+												<polygon points="56,56 48,37 41,45" fill="#fdb347"/>
+												<!-- Bottom (180°) -->
+												<polygon points="0,80 4,55 -4,55" fill="#fdb347"/>
+												<!-- Bottom-left (225°) -->
+												<polygon points="-56,56 -41,45 -48,37" fill="#fdb347"/>
+												<!-- Left (270°) -->
+												<polygon points="-80,0 -55,4 -55,-4" fill="#fdb347"/>
+												<!-- Top-left (315°) -->
+												<polygon points="-56,-56 -48,-37 -41,-45" fill="#fdb347"/>
+										</g>
+
+										<!-- Sun -->
+										<circle cx="100" cy="100" r="35" fill="#fdb347" filter="url(#sunGlow)"/>
+
+										<!-- Clouds -->
+										<ellipse class="cloud" cx="45" cy="40" rx="30" ry="12" fill="rgba(255,255,255,0.9)"/>
+										<ellipse class="cloud" cx="155" cy="130" rx="25" ry="10" fill="rgba(255,255,255,0.9)" style="animation-delay: 0.8s"/>
+								</g>
+						</svg>
+				</button>
+
+				<button class="weather-btn" data-time="night">
+						<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="background: transparent;">
+								<defs>
+										<linearGradient id="nightBg" x1="0%" y1="0%" x2="0%" y2="100%">
+												<stop offset="0%" style="stop-color:#1e3a5f;stop-opacity:1" />
+												<stop offset="50%" style="stop-color:#2d4a6f;stop-opacity:1" />
+												<stop offset="100%" style="stop-color:#3d5a7f;stop-opacity:1" />
+										</linearGradient>
+										<filter id="moonGlow">
+												<feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+												<feMerge>
+														<feMergeNode in="coloredBlur"/>
+														<feMergeNode in="SourceGraphic"/>
+												</feMerge>
+										</filter>
+										<filter id="starGlow">
+												<feGaussianBlur stdDeviation="0.5" result="coloredBlur"/>
+												<feMerge>
+														<feMergeNode in="coloredBlur"/>
+														<feMergeNode in="SourceGraphic"/>
+												</feMerge>
+										</filter>
+								</defs>
+
+								<clipPath id="nightClip">
+										<circle cx="100" cy="100" r="100"/>
+								</clipPath>
+
+								<g clip-path="url(#nightClip)">
+										<circle cx="100" cy="100" r="100" fill="url(#nightBg)"/>
+
+										<g class="star" filter="url(#starGlow)">
+												<circle cx="40" cy="30" r="1.5" fill="white"/>
+												<line x1="40" y1="26" x2="40" y2="34" stroke="white" stroke-width="0.5"/>
+												<line x1="36" y1="30" x2="44" y2="30" stroke="white" stroke-width="0.5"/>
+										</g>
+										<g class="star" filter="url(#starGlow)" style="animation-delay: 0.2s">
+												<circle cx="150" cy="50" r="1.5" fill="white"/>
+												<line x1="150" y1="46" x2="150" y2="54" stroke="white" stroke-width="0.5"/>
+												<line x1="146" y1="50" x2="154" y2="50" stroke="white" stroke-width="0.5"/>
+										</g>
+										<g class="star" filter="url(#starGlow)" style="animation-delay: 0.4s">
+												<circle cx="60" cy="70" r="1.5" fill="white"/>
+												<line x1="60" y1="66" x2="60" y2="74" stroke="white" stroke-width="0.5"/>
+												<line x1="56" y1="70" x2="64" y2="70" stroke="white" stroke-width="0.5"/>
+										</g>
+										<g class="star" filter="url(#starGlow)" style="animation-delay: 0.6s">
+												<circle cx="160" cy="100" r="1.5" fill="white"/>
+												<line x1="160" y1="96" x2="160" y2="104" stroke="white" stroke-width="0.5"/>
+												<line x1="156" y1="100" x2="164" y2="100" stroke="white" stroke-width="0.5"/>
+										</g>
+										<g class="star" filter="url(#starGlow)" style="animation-delay: 0.8s">
+												<circle cx="40" cy="130" r="1.5" fill="white"/>
+												<line x1="40" y1="126" x2="40" y2="134" stroke="white" stroke-width="0.5"/>
+												<line x1="36" y1="130" x2="44" y2="130" stroke="white" stroke-width="0.5"/>
+										</g>
+										<g class="star" filter="url(#starGlow)" style="animation-delay: 1s">
+												<circle cx="30" cy="90" r="1.5" fill="white"/>
+												<line x1="30" y1="86" x2="30" y2="94" stroke="white" stroke-width="0.5"/>
+												<line x1="26" y1="90" x2="34" y2="90" stroke="white" stroke-width="0.5"/>
+										</g>
+
+										<g filter="url(#moonGlow)">
+												<circle cx="100" cy="80" r="30" fill="#f0f0f0"/>
+												<circle cx="112" cy="72" r="32" fill="#2d4a6f"/>
+										</g>
+
+										<ellipse cx="100" cy="160" rx="100" ry="20" fill="#4a6a8f"/>
+										<ellipse cx="100" cy="180" rx="100" ry="20" fill="#5a7a9f" opacity="0.7"/>
+								</g>
+						</svg>
+				</button>
+		</div>
+		<div id="overlay">
+				<h1>Where are those chill vibes coming from?</h1>
+				<button>Let's find out !</button>
+		</div>
+</body>
+</html>
