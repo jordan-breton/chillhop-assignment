@@ -14,7 +14,7 @@ import initCat from './cat/Cat.js';
 import initEnvironment from './scene/environment.js';
 import initSuburb from './scene/suburb.js';
 import initBirds from './birds/Birds.js';
-import initCar from './car/car.js';
+import initCars from './car/car.js';
 import initWater from './water/water.js';
 import initPlane from './plane/plane.js';
 import Config from './Config.js';
@@ -110,9 +110,9 @@ function start(model) {
 		textureLoader.load('/textures/bird.webp'),
 		5,
 	);
-	const car = initCar(scene, model);
-	const plane = initPlane(scene, model);
-	const water = initWater(scene, model);
+	const car = initCars(config, scene, model);
+	const plane = initPlane(config, scene, model);
+	const water = initWater(config, scene, model);
 
 	config.set('night');
 

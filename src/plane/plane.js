@@ -1,9 +1,11 @@
 import * as THREE from "three";
 import pathPoints from "./planepath.json";
 
-export default function initPlane(scene, model) {
+export default function initPlane(config, scene, model) {
 	const plane = model.scene.getObjectByName("plane");
-	const propeler = model.scene.getObjectByName("propeler");
+	const propeller = model.scene.getObjectByName("propeler");
+
+	let emissiveMaterials = [];
 
 	plane.traverse((planePart) => {
 		if (planePart instanceof THREE.Mesh) {
@@ -21,8 +23,20 @@ export default function initPlane(scene, model) {
 		if (planePart.material?.name?.match('light')) {
 			planePart.material.emissive = planePart.material.color;
 			planePart.material.emissiveIntensity = 2;
+			emissiveMaterials.push(planePart.material);
 		}
 	});
+
+	config.on(
+		'changed',
+		({detail: {
+			'lights.plane.intensity': intensity,
+		}}) => {
+			emissiveMaterials.forEach((material) => {
+				material.emissiveIntensity = intensity;
+			});
+		}
+	);
 
 	const points = pathPoints.map(p => new THREE.Vector3(p[0], p[2], -p[1]));
 	const curve = new THREE.CatmullRomCurve3(points, false);
@@ -32,7 +46,7 @@ export default function initPlane(scene, model) {
 
 	return {
 		update(time) {
-			propeler.rotation.z += 0.9;
+			propeller.rotation.z += 0.9;
 
 			const tGlobal = (time.elapsedSeconds % duration) / duration;
 			const t = tGlobal % 1;

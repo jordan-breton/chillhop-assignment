@@ -37,11 +37,12 @@ const CONFIGS = {
 		'lights.windows.bg.intensity': 125,
 		'lights.windows.bg.color': '#985D55',
 
-		'lights.cars.enabled': true,
-		'lights.plane.enabled': true,
+		'lights.cars.intensity': 1,
+		'lights.plane.intensity': 1,
 
 		'water.glint.intensity': 1500,
-		'water.flint.color': "#f8d5ae",
+		'water.glint.color': "#f8d5ae",
+		'water.glint.size': 900,
 	},
 	sunrise: {
 		'bloom.intensity': 0.35,
@@ -79,11 +80,12 @@ const CONFIGS = {
 		'lights.windows.bg.intensity': 125,
 		'lights.windows.bg.color': '#985D55',
 
-		'lights.cars.enabled': true,
-		'lights.plane.enabled': true,
+		'lights.cars.intensity': 1,
+		'lights.plane.intensity': 1,
 
 		'water.glint.intensity': 1500,
-		'water.flint.color': "#f8d5ae",
+		'water.glint.color': "#f8d5ae",
+		'water.glint.size': 900,
 	},
 	day: {
 		'bloom.intensity': 0.35,
@@ -121,11 +123,12 @@ const CONFIGS = {
 		'lights.windows.bg.intensity': 125,
 		'lights.windows.bg.color': '#985D55',
 
-		'lights.cars.enabled': true,
-		'lights.plane.enabled': true,
+		'lights.cars.intensity': 1,
+		'lights.plane.intensity': 1,
 
 		'water.glint.intensity': 1500,
-		'water.flint.color': "#f8d5ae",
+		'water.glint.color': "#f8d5ae",
+		'water.glint.size': 900,
 	}
 };
 
@@ -160,7 +163,40 @@ export default class Config extends EventEmitter {
 
 	#addConfigToGui(folder, config) {
 		this.#addBloomGui(folder, config);
+		this.#addLightsConfigToGui(folder, config);
+		this.#addWaterConfigToGui(folder, config);
 
+		folder.onChange(() => {
+			if (this.config !== config) {
+				return;
+			}
+
+			this.emit('changed', config);
+		});
+	}
+
+	#addWaterConfigToGui(folder, config) {
+		const water = folder.addFolder('Water');
+
+		water.addColor(config, 'water.glint.color')
+			.name('Glint color');
+
+		water.add(config, 'water.glint.intensity')
+			.name('Glint intensity')
+			.min(0)
+			.max(2500)
+			.step(10);
+
+		water.add(config, 'water.glint.size')
+			.name('Glint size')
+			.min(0)
+			.max(2000)
+			.step(10);
+
+		water.close();
+	}
+
+	#addLightsConfigToGui(folder, config) {
 		const lightsFolder = folder.addFolder('Lights');
 
 		this.#addMainLightsGui(lightsFolder, config);
@@ -170,19 +206,24 @@ export default class Config extends EventEmitter {
 		this.#addForegroundLightsGui(lightsFolder, config);
 
 		const windowsFolder = lightsFolder.addFolder('Windows');
+
 		this.#addMainWindowsLightsGui(windowsFolder, config);
 		this.#addBackgroundWindowsLightsGui(windowsFolder, config);
+
 		windowsFolder.close();
 
+		lightsFolder.add(config, 'lights.cars.intensity')
+			.name('Cars lights')
+			.min(0)
+			.max(1)
+			.step(0.01);
+		lightsFolder.add(config, 'lights.plane.intensity')
+			.name('Plane lights')
+			.min(0)
+			.max(1)
+			.step(0.01);
+
 		lightsFolder.close();
-
-		folder.onChange(() => {
-			if (this.config !== config) {
-				return;
-			}
-
-			this.emit('changed', config);
-		});
 	}
 
 	#addBloomGui(folder, config) {

@@ -36,7 +36,7 @@ export default function initPostprocessing(config, scene, camera, renderer, gui)
 		camera,
 		bloomEffect,
 		new SMAAEffect({
-			preset: SMAAPreset.ULTRA,
+			preset: SMAAPreset.MEDIUM,
 		}),
 		toneMappingEffect,
 	);

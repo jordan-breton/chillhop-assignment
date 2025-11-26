@@ -8,9 +8,9 @@ const CARS = [
 	{ color: "#78cabb" },
 ];
 
-export default function initCar(scene, model) {
+export default function initCars(config, scene, model) {
 	const baseCar = model.scene.getObjectByName("car");
-	baseCar.visible = false; // hide the original
+	baseCar.visible = false;
 
 	const points = pathPoints.map(p => new THREE.Vector3(p[0], p[2], -p[1]));
 	const curve = new THREE.CatmullRomCurve3(points, false);
@@ -21,6 +21,8 @@ export default function initCar(scene, model) {
 	const cars = CARS.map((entry, i) => {
 		const clone = baseCar.clone(true);
 		clone.visible = true;
+
+		const emissiveMaterials = {};
 
 		clone.traverse(carPart => {
 			if (carPart instanceof THREE.Mesh) {
@@ -44,11 +46,13 @@ export default function initCar(scene, model) {
 			} else if (carPart.material?.name === "Mat.1_0.001") {
 				carPart.material.color = new THREE.Color(1, 0, 0);
 				carPart.material.emissive = new THREE.Color(1, 0, 0);
-				carPart.material.emissiveIntensity = 110.0;
+				carPart.material.emissiveIntensity = 1.0;
+				emissiveMaterials[carPart.material.name] = carPart.material;
 			} else if (carPart.material?.name === "front-lights") {
 				carPart.material.color = new THREE.Color(1, 1, 0);
 				carPart.material.emissive = new THREE.Color(1, 1, 0);
-				carPart.material.emissiveIntensity = 250.0;
+				carPart.material.emissiveIntensity = 1.0;
+				emissiveMaterials[carPart.material.name] = carPart.material;
 			}
 		});
 
@@ -57,8 +61,21 @@ export default function initCar(scene, model) {
 		const offset = (baseOffset + jitter + 1) % 1;
 		scene.add(clone);
 
-		return { mesh: clone, offset };
+		return { mesh: clone, offset, emissiveMaterials };
 	});
+
+	config.on(
+		'changed',
+		({detail: {
+			'lights.cars.intensity': intensity,
+		}}) => {
+			cars.forEach(({ emissiveMaterials: materials }) => {
+				Object.values(materials).forEach((material) => {
+					material.emissiveIntensity = intensity;
+				});
+			});
+		},
+	);
 
 	return {
 		update(time) {
